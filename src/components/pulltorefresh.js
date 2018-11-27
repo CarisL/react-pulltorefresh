@@ -1,68 +1,127 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { uniqueId } from 'loadsh'
-import PullToRefreshJS from 'pulltorefreshjs'
-import { findDOMNode } from 'react-dom'
+import React, { Component } from "react";
+import uniqueId from "lodash/uniqueId";
+import PullToRefreshJS from "pulltorefreshjs";
+import { findDOMNode } from "react-dom";
 
-class PullToRefresh extends Component {
-    static defaultProps = {
-        disabled: false,
-        onRefresh: () => { },
-        distanceToRefresh: 75
+type Props = {
+  onRefresh: Function,
+  children?: any,
+  targetComponent?: React.ReactInstance,
+  distanceFromTop: number,
+  disabled: boolean,
+  instructionsReleaseToRefresh: String,
+  distThreshold: number,
+  distMax: number,
+  getStyles: Function,
+  instructionsRefreshing: String,
+  instructionsPullToRefresh: String
+};
+class Pulltorefresh extends Component {
+  props: Props;
+
+  constructor(props: Props) {
+    super(props);
+    this.elementId = uniqueId("ptr");
+    this.ptrInstance = {};
+  }
+
+  componentDidMount() {
+    const { disabled } = this.props;
+    if (!disabled) {
+      this.setupPullToRefresh();
     }
+  }
 
-    static propTypes = {
-        distanceToRefresh: PropTypes.number,
-        disabled: PropTypes.bool,
-        className: PropTypes.string,
-        style: PropTypes.object,
-        onRefresh: PropTypes.func
+  componentDidUpdate(prevProps) {
+    const { disabled } = this.props;
+    const isDisableToEnable = prevProps.disabled && !disabled;
+    const isEnableToDisable = !prevProps.disabled && disabled;
+    if (isDisableToEnable) {
+      this.setupPullToRefresh();
     }
-
-
-    constructor(props) {
-        super(props)
-        this.elementId = uniqueId('ptr')
+    if (isEnableToDisable) {
+      this.ptrInstance.destroy();
     }
+  }
 
-    componentDidMount() {
-        if (!this.props.disabled) this.initPullToRefresh()
+  setupPullToRefresh() {
+    const {
+      instructionsReleaseToRefresh,
+      distThreshold,
+      distMax,
+      getStyles,
+      instructionsRefreshing,
+      instructionsPullToRefresh
+    } = this.props;
+
+    this.ptrInstance = PullToRefreshJS.init({
+      mainElement: `#${this.elementId}`,
+      instructionsPullToRefresh,
+      instructionsReleaseToRefresh,
+      distThreshold,
+      distMax,
+      getStyles,
+      instructionsRefreshing,
+      shouldPullToRefresh: () => {
+        let containerElement;
+        try {
+          containerElement = findDOMNode(this);
+        } catch (e) {}
+        let targetComponent;
+        if (this.props.targetComponent) {
+          targetComponent = findDOMNode(this.props.targetComponent);
+        }
+        if (
+          containerElement &&
+          this.props.targetComponent &&
+          this.props.distanceFromTop
+        ) {
+          return targetComponent.scrollTop <= this.props.distanceFromTop;
+        }
+        if (containerElement) {
+          const {
+            top: distanceFromTop
+          } = containerElement.getBoundingClientRect();
+          if (this.props.distanceFromTop) {
+            return distanceFromTop <= this.props.distanceFromTop;
+          }
+        }
+        if (window.scrollY) {
+          return window.scrollY;
+        }
+      },
+      triggerElement: `#${this.elementId}`,
+      onRefresh: () => {
+        const { onRefresh } = this.props;
+        if (onRefresh) {
+          onRefresh();
+        }
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    const { disabled } = this.props;
+    if (this.ptrInstance && !disabled) {
+      this.ptrInstance.destroy();
     }
+  }
 
-    componentDidUpdate(preProps) {
-        const disabledToEnabled = preProps.disabled && !this.props.disabled
-        const enabledToDisabled = !preProps.disabled && this.props.disabled
-
-        if (disabledToEnabled) this.initPullToRefresh()
-        if (enabledToDisabled) this.$instance.destroy()
-    }
-
-    componentWillUnmount() {
-        this.$instance.destroy()
-    }
-
-    initPullToRefresh() {
-
-        this.$instance = PullToRefreshJS.init({
-            mainElement: `#${this.elementId}`,
-            triggerElement: `#${this.elementId}`,
-            onRefresh: () => this.props.onRefresh(),
-            shouldPullToRefresh: () => {
-                const containerElement = findDOMNode(this)
-                console.log('containerElement', containerElement)
-
-                return !window.scrollY
-            }
-        })
-        console.log(this.$instance)
-    }
-
-    render() {
-        return <div className={this.props.className} style={this.props.style} id={this.elementId}>{this.props.children}</div>
-    }
-
-
+  render() {
+    const { children } = this.props;
+    return <div id={this.elementId}>{children}</div>;
+  }
 }
 
+Pulltorefresh.defaultProps = {
+  disabled: false,
+  distanceFromTop: 50,
+  instructionsReleaseToRefresh: "Release to refresh",
+  instructionsPullToRefresh: "Pull down to refresh",
+  onRefresh: () => {},
+  distThreshold: 60,
+  distMax: 80,
+  instructionsRefreshing: "Refreshing"
+};
 
-export default PullToRefresh
+export default Pulltorefresh;
