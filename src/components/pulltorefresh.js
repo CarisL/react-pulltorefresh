@@ -1,25 +1,38 @@
 import React, { Component } from "react";
 import uniqueId from "lodash/uniqueId";
+import PropTypes from "prop-types";
 import PullToRefreshJS from "pulltorefreshjs";
 import { findDOMNode } from "react-dom";
 
-type Props = {
-  onRefresh: Function,
-  children?: any,
-  targetComponent?: React.ReactInstance,
-  distanceFromTop: number,
-  disabled: boolean,
-  instructionsReleaseToRefresh: String,
-  distThreshold: number,
-  distMax: number,
-  getStyles: Function,
-  instructionsRefreshing: String,
-  instructionsPullToRefresh: String
-};
 class Pulltorefresh extends Component {
-  props: Props;
+  static defaultProps = {
+    disabled: false,
+    distanceFromTop: 50,
+    instructionsReleaseToRefresh: "Release to refresh",
+    instructionsPullToRefresh: "Pull down to refresh",
+    onRefresh: () => {},
+    distThreshold: 60,
+    distMax: 80,
+    instructionsRefreshing: "Refreshing"
+  };
 
-  constructor(props: Props) {
+  static propTypes = {
+    distanceToRefresh: PropTypes.number,
+    disabled: PropTypes.bool,
+    className: PropTypes.string,
+    style: PropTypes.object,
+    onRefresh: PropTypes.func,
+    children: Proptype.object,
+    distanceFromTop: PropTypes.number,
+    instructionsReleaseToRefresh: PropTypes.string,
+    distThreshold: PropTypes.number,
+    distMax: PropTypes.number,
+    getStyles: PropTypes.func,
+    instructionsRefreshing: PropTypes.string,
+    instructionsPullToRefresh: PropTypes.string
+  };
+
+  constructor(props) {
     super(props);
     this.elementId = uniqueId("ptr");
     this.ptrInstance = {};
@@ -112,16 +125,5 @@ class Pulltorefresh extends Component {
     return <div id={this.elementId}>{children}</div>;
   }
 }
-
-Pulltorefresh.defaultProps = {
-  disabled: false,
-  distanceFromTop: 50,
-  instructionsReleaseToRefresh: "Release to refresh",
-  instructionsPullToRefresh: "Pull down to refresh",
-  onRefresh: () => {},
-  distThreshold: 60,
-  distMax: 80,
-  instructionsRefreshing: "Refreshing"
-};
 
 export default Pulltorefresh;
