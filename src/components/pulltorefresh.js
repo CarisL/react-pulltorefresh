@@ -22,7 +22,7 @@ class Pulltorefresh extends Component {
     className: PropTypes.string,
     style: PropTypes.object,
     onRefresh: PropTypes.func,
-    children: Proptype.object,
+    children: PropTypes.object,
     distanceFromTop: PropTypes.number,
     instructionsReleaseToRefresh: PropTypes.string,
     distThreshold: PropTypes.number,
