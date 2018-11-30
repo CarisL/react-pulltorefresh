@@ -13,13 +13,16 @@ class Pulltorefresh extends Component {
     onRefresh: () => {},
     distThreshold: 60,
     distMax: 80,
-    instructionsRefreshing: "Refreshing"
+    instructionsRefreshing: "Refreshing",
+    refreshTimeout: 500,
+    distReload: 50,
+    distIgnore: 0,
+    iconArrow: "&#8675"
   };
 
   static propTypes = {
     distanceToRefresh: PropTypes.number,
     disabled: PropTypes.bool,
-    className: PropTypes.string,
     style: PropTypes.object,
     onRefresh: PropTypes.func,
     children: PropTypes.object,
@@ -29,7 +32,11 @@ class Pulltorefresh extends Component {
     distMax: PropTypes.number,
     getStyles: PropTypes.func,
     instructionsRefreshing: PropTypes.string,
-    instructionsPullToRefresh: PropTypes.string
+    instructionsPullToRefresh: PropTypes.string,
+    refreshTimeout: PropTypes.number,
+    distReload: PropTypes.number,
+    distIgnore: PropTypes.number,
+    iconArrow: PropTypes.string
   };
 
   constructor(props) {
@@ -64,7 +71,11 @@ class Pulltorefresh extends Component {
       distMax,
       getStyles,
       instructionsRefreshing,
-      instructionsPullToRefresh
+      instructionsPullToRefresh,
+      refreshTimeout,
+      distReload,
+      distIgnore,
+      iconArrow
     } = this.props;
 
     this.ptrInstance = PullToRefreshJS.init({
@@ -75,6 +86,10 @@ class Pulltorefresh extends Component {
       distMax,
       getStyles,
       instructionsRefreshing,
+      refreshTimeout,
+      distReload,
+      distIgnore,
+      iconArrow,
       shouldPullToRefresh: () => {
         let containerElement;
         try {
@@ -121,8 +136,12 @@ class Pulltorefresh extends Component {
   }
 
   render() {
-    const { children } = this.props;
-    return <div id={this.elementId}>{children}</div>;
+    const { children, style } = this.props;
+    return (
+      <div id={this.elementId} style={style}>
+        {children}
+      </div>
+    );
   }
 }
 
