@@ -1,6 +1,6 @@
 {
-  "name": "react-pulltorefresh",
-  "version": "0.0.1",
+  "name": "react-pull-to-refresh-js",
+  "version": "0.0.2",
   "description": "React component for web pull to refresh",
   "main": "dist/rect-pulltorefresh.js",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jardenliu/react-pulltorefresh.git"
+    "url": "git+https://github.com/CarisL/react-pulltorefresh"
   },
   "keywords": [
     "react",
@@ -26,9 +26,9 @@
   "author": "jardenliu",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jardenliu/react-pulltorefresh/issues"
+    "url": "https://github.com/CarisL/react-pulltorefresh/issues"
   },
-  "homepage": "https://github.com/jardenliu/react-pulltorefresh#readme",
+  "homepage": "https://github.com/CarisL/react-pulltorefresh#readme",
   "devDependencies": {
     "@babel/core": "^7.1.6",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
