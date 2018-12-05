@@ -1,7 +1,8 @@
 # react-pulltorefresh
 
 基于[pulltorefreshjs](https://github.com/BoxFactura/pulltorefresh.js/blob/master/README.md)的下拉刷新组件。
-如果有问题， 可以提 issue 或者可以直接联系我 8452201776@qq.com ～谢谢。
+
+存在的问题，在 safari 下出现卡顿
 
 ## example
 

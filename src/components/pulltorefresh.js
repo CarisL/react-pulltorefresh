@@ -25,7 +25,6 @@ class Pulltorefresh extends Component {
     disabled: PropTypes.bool,
     style: PropTypes.object,
     onRefresh: PropTypes.func,
-    children: PropTypes.object,
     distanceFromTop: PropTypes.number,
     instructionsReleaseToRefresh: PropTypes.string,
     distThreshold: PropTypes.number,
@@ -90,21 +89,12 @@ class Pulltorefresh extends Component {
       distReload,
       distIgnore,
       iconArrow,
-      shouldPullToRefresh: () => {
+      shouldPullToRefresh: e => {
         let containerElement;
         try {
           containerElement = findDOMNode(this);
-        } catch (e) {}
-        let targetComponent;
-        if (this.props.targetComponent) {
-          targetComponent = findDOMNode(this.props.targetComponent);
-        }
-        if (
-          containerElement &&
-          this.props.targetComponent &&
-          this.props.distanceFromTop
-        ) {
-          return targetComponent.scrollTop <= this.props.distanceFromTop;
+        } catch (e) {
+          console.log(e);
         }
         if (containerElement) {
           const {
@@ -114,9 +104,7 @@ class Pulltorefresh extends Component {
             return distanceFromTop <= this.props.distanceFromTop;
           }
         }
-        if (window.scrollY) {
-          return window.scrollY;
-        }
+        return !window.scrollY;
       },
       triggerElement: `#${this.elementId}`,
       onRefresh: () => {
